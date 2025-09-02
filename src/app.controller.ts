@@ -26,7 +26,6 @@ export class AppController {
 
       const cuit = `${config.companyIdentificationValue}`.replaceAll('-', '');
       const vatCondition = config.vatCondition;
-      console.log('vatCondition:', vatCondition);
       if (!transaction.type.codes.length) {
         throw new Error('Códigos AFIP no definidos');
       }
