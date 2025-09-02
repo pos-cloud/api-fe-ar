@@ -212,6 +212,13 @@ export class AppController {
       console.log('Body2:', JSON.stringify(FECAEDetRequest));
       console.log('---AFIP---');
 
+      console.log('---BEFORE AFIP CALL---');
+      console.log('TA Token:', TA.credentials[0].token);
+      console.log('TA Sign:', TA.credentials[0].sign);
+      console.log('FeCabReq:', JSON.stringify(FeCabReq, null, 2));
+      console.log('FECAEDetRequest:', JSON.stringify(FECAEDetRequest, null, 2));
+      console.log('---BEFORE AFIP CALL---');
+
       const caeData = await this.wsfev1Service.solicitarCAE(
         TA.credentials[0].token,
         TA.credentials[0].sign,
@@ -237,6 +244,13 @@ export class AppController {
         message,
       };
     } catch (error) {
+      console.log('---ERROR DETAILS---');
+      console.log('Error type:', typeof error);
+      console.log('Error message:', error.message);
+      console.log('Error stack:', error.stack);
+      console.log('Full error object:', JSON.stringify(error, null, 2));
+      console.log('---ERROR DETAILS---');
+
       return {
         status: 'Error',
         message: error.message,

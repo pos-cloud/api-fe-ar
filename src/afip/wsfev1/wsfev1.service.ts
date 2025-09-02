@@ -48,6 +48,14 @@ export class Wsfev1Service {
   }
   async solicitarCAE(Token, Sign, Cuit, FeCabReq, FECAEDetRequest): Promise<FECAESolicitar> {
     try {
+      this.logger.log('---WSFEv1 CALL---');
+      this.logger.log('Token:', Token);
+      this.logger.log('Sign:', Sign);
+      this.logger.log('Cuit:', Cuit);
+      this.logger.log('FeCabReq:', JSON.stringify(FeCabReq, null, 2));
+      this.logger.log('FECAEDetRequest:', JSON.stringify(FECAEDetRequest, null, 2));
+      this.logger.log('---WSFEv1 CALL---');
+
       const client = await this.soapHelper.createClient(this.address, this.endpoint);
 
       const xml = {
