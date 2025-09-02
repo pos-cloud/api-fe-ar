@@ -22,6 +22,7 @@ export class AppController {
 
       const cuit = `${config.companyIdentificationValue}`.replaceAll('-', '');
       const vatCondition = config.vatCondition;
+      console.log('vatCondition:', vatCondition);
       if (!transaction.type.codes.length) {
         throw new Error('Códigos AFIP no definidos');
       }
@@ -194,7 +195,15 @@ export class AppController {
 
       // AFIP siempre requiere la condición IVA del receptor, incluso para monotributistas
       if (vatCondition == 6) {
-        FECAEDetRequest['Iva'] = null;
+        FECAEDetRequest['Iva'] = {
+          AlicIva: [
+            {
+              Id: 5, // Consumidor Final (receptor)
+              BaseImp: regfe['ImpNeto'],
+              Importe: 0, // Sin IVA para monotributistas
+            },
+          ],
+        };
       }
 
       console.log(JSON.stringify(FECAEDetRequest));
