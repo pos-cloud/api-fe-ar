@@ -181,7 +181,16 @@ export class AppController {
           },
         },
         Iva: {
-          AlicIva: aliCuotaIVA.length > 0 ? aliCuotaIVA : null,
+          AlicIva:
+            aliCuotaIVA.length > 0
+              ? aliCuotaIVA
+              : [
+                  {
+                    Id: 5, // Consumidor Final
+                    BaseImp: regfe['ImpNeto'],
+                    Importe: 0,
+                  },
+                ],
         },
       };
       if (CbteAsoc) {
