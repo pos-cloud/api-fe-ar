@@ -52,6 +52,29 @@ export class Wsfev1Service {
       throw error;
     }
   }
+  async getCondicionIvaReceptor(Token, Sign, Cuit, ClaseCmp = 'C'): Promise<any> {
+    try {
+      this.logger.log('---GETTING CONDICION IVA RECEPTOR---');
+      const client = await this.soapHelper.createClient(this.address, this.endpoint);
+
+      const xml = {
+        Auth: { Token, Sign, Cuit },
+        ClaseCmp,
+      };
+
+      const response = await this.soapHelper.callEndpoint(
+        client,
+        'FEParamGetCondicionIvaReceptor',
+        xml,
+      );
+      this.logger.log('Condicion IVA Receptor response:', JSON.stringify(response, null, 2));
+      return response;
+    } catch (error) {
+      this.logger.log('Error getting Condicion IVA Receptor:', error.message);
+      throw error;
+    }
+  }
+
   async solicitarCAE(Token, Sign, Cuit, FeCabReq, FECAEDetRequest): Promise<FECAESolicitar> {
     try {
       this.logger.log('---WSFEv1 CALL---');

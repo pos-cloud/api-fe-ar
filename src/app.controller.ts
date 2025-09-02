@@ -219,6 +219,14 @@ export class AppController {
       console.log('FECAEDetRequest:', JSON.stringify(FECAEDetRequest, null, 2));
       console.log('---BEFORE AFIP CALL---');
 
+      // Consultar condiciones IVA válidas para factura C
+      const condicionIvaResponse = await this.wsfev1Service.getCondicionIvaReceptor(
+        TA.credentials[0].token,
+        TA.credentials[0].sign,
+        cuit,
+        'C',
+      );
+
       const caeData = await this.wsfev1Service.solicitarCAE(
         TA.credentials[0].token,
         TA.credentials[0].sign,
