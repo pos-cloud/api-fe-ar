@@ -126,23 +126,19 @@ export class AppController {
       }
 
       const Opcional = transaction?.optionalAFIP?.value
-        ? [
-            {
-              Id: transaction.optionalAFIP.id,
-              Valor: transaction.optionalAFIP.value,
-            },
-          ]
+        ? {
+            Id: transaction.optionalAFIP.id,
+            Valor: transaction.optionalAFIP.value,
+          }
         : null;
 
-      const CbteAsoc = [];
-
-      if (canceledTransactions) {
-        CbteAsoc.push({
-          Tipo: canceledTransactions.code,
-          PtoVta: canceledTransactions.origin,
-          Nro: canceledTransactions.number,
-        });
-      }
+      const CbteAsoc = canceledTransactions
+        ? {
+            Tipo: canceledTransactions.code,
+            PtoVta: canceledTransactions.origin,
+            Nro: canceledTransactions.number,
+          }
+        : null;
 
       const FeCabReq = {
         CantReg: 1,
@@ -181,15 +177,15 @@ export class AppController {
         },
       };
 
-      if (CbteAsoc && CbteAsoc.length > 0) {
+      if (CbteAsoc) {
         FECAEDetRequest['CbtesAsoc'] = {
-          CbteAsoc: CbteAsoc,
+          CbteAsoc,
         };
       }
 
-      if (Opcional && Opcional.length > 0) {
+      if (Opcional) {
         FECAEDetRequest['Opcionales'] = {
-          Optional: Opcional,
+          Opcional,
         };
       }
 
