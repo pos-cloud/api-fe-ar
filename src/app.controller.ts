@@ -179,21 +179,24 @@ export class AppController {
         },
       };
 
-      // if (CbteAsoc) {
-      //   FECAEDetRequest['CbtesAsoc'] = {
-      //     CbteAsoc,
-      //   };
-      // }
+      if (CbteAsoc) {
+        FECAEDetRequest['CbtesAsoc'] = {
+          CbteAsoc,
+        };
+      }
 
-      // if (Opcional) {
-      //   FECAEDetRequest['Opcionales'] = {
-      //     Opcional,
-      //   };
-      // }
+      if (Opcional) {
+        FECAEDetRequest['Opcionales'] = {
+          Opcional,
+        };
+      }
 
       if (vatCondition == 6) {
         FECAEDetRequest['Iva'] = null;
       }
+
+      console.log(JSON.stringify(FECAEDetRequest));
+
       const caeData = await this.wsfev1Service.solicitarCAE(
         TA.credentials[0].token,
         TA.credentials[0].sign,
