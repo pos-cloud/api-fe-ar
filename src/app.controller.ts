@@ -18,6 +18,8 @@ export class AppController {
     @Body('canceledTransactions') canceledTransactions: CanceledTransaction,
   ): Promise<any> {
     try {
+      console.log(JSON.stringify(transaction));
+
       const cuit = `${config.companyIdentificationValue}`.replaceAll('-', '');
       const vatCondition = config.vatCondition;
       if (!transaction.type.codes.length) {

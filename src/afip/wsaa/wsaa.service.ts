@@ -128,7 +128,6 @@ export class WsaaService {
 
       return false;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -141,11 +140,9 @@ export class WsaaService {
         const response = await this.callWSAA(cms, cuit);
         return response;
       } catch (error) {
-        console.log(error);
         throw new Error(`${error} --------- ${xml}`);
       }
     } catch (error) {
-      console.log(error);
       throw new Error(error);
     }
   }
@@ -186,7 +183,6 @@ export class WsaaService {
       await fs.writeFile(filePath, `${xml}`, 'utf8');
       return xml;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -209,7 +205,6 @@ export class WsaaService {
       await fs.writeFile(filePath, `${response.loginCmsReturn}`, 'utf8');
       return response;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
