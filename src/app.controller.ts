@@ -100,7 +100,7 @@ export class AppController {
       regfe['ImpTotConc'] = 0; // no gravado
       regfe['ImpIVA'] = Math.floor(impIVA * 100) / 100; // IVA liquidado
       regfe['ImpTrib'] = 0; // otros tributos
-      regfe['ImpOpEx'] = exempt; // operacion exentas
+      regfe['ImpOpEx'] = 0; // operacion exentas
       regfe['ImpTotal'] = impTotal; // total de la factura. ImpNeto + ImpTotConc + ImpIVA + ImpTrib + ImpOpEx
       regfe['FchServDesde'] = null; // solo concepto 2 o 3
       regfe['FchServHasta'] = null; // solo concepto 2 o 3
