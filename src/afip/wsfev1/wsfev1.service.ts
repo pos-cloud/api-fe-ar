@@ -64,7 +64,7 @@ export class Wsfev1Service {
 
       const response = await this.soapHelper.callEndpoint(
         client,
-        'FEParamGetCondicionIvaReceptor',
+        'FEParamGetCondicionFrenteIvaReceptor',
         xml,
       );
       this.logger.log('Condicion IVA Receptor response:', JSON.stringify(response, null, 2));
