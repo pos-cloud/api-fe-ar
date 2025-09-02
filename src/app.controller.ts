@@ -18,12 +18,6 @@ export class AppController {
     @Body('canceledTransactions') canceledTransactions: CanceledTransaction,
   ): Promise<any> {
     try {
-      // console.log('---REQUEST---');
-      // console.log('config', config);
-      // console.log('transaction', transaction);
-      // console.log('canceledTransactions', canceledTransactions);
-      // console.log('---REQUEST---');
-
       const cuit = `${config.companyIdentificationValue}`.replaceAll('-', '');
       const vatCondition = config.vatCondition;
       if (!transaction.type.codes.length) {
@@ -101,10 +95,10 @@ export class AppController {
       regfe['DocNro'] = docnumber; //0 para consumidor final / importe menor a 1000
       regfe['CbteFch'] = cbteFecha; // fecha emision de factura
       regfe['ImpNeto'] = Math.floor(impneto * 100) / 100; // Imp Neto
-      regfe['ImpTotConc'] = exempt; // no gravado
+      regfe['ImpTotConc'] = 0; // no gravado
       regfe['ImpIVA'] = Math.floor(impIVA * 100) / 100; // IVA liquidado
       regfe['ImpTrib'] = 0; // otros tributos
-      regfe['ImpOpEx'] = 0; // operacion exentas
+      regfe['ImpOpEx'] = exempt; // operacion exentas
       regfe['ImpTotal'] = impTotal; // total de la factura. ImpNeto + ImpTotConc + ImpIVA + ImpTrib + ImpOpEx
       regfe['FchServDesde'] = null; // solo concepto 2 o 3
       regfe['FchServHasta'] = null; // solo concepto 2 o 3
@@ -202,13 +196,6 @@ export class AppController {
       if (vatCondition == 6) {
         FECAEDetRequest['Iva'] = null;
       }
-
-      // console.log('---AFIP---');
-      // console.log('CUIT:', cuit);
-      // console.log('Body:', JSON.stringify(FeCabReq));
-      // console.log('Body2:', JSON.stringify(FECAEDetRequest));
-      // console.log('---AFIP---');
-
       const caeData = await this.wsfev1Service.solicitarCAE(
         TA.credentials[0].token,
         TA.credentials[0].sign,
@@ -234,7 +221,6 @@ export class AppController {
         message,
       };
     } catch (error) {
-      console.log(error);
       return {
         status: 'Error',
         message: error.message,
