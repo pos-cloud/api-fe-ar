@@ -204,9 +204,7 @@ export class AppController {
         };
       }
 
-      if (vatCondition == 6) {
-        FECAEDetRequest['Iva'] = null;
-      }
+      // Removido: ya no es necesario porque Iva.AlicIva siempre tiene contenido
 
       console.log('---AFIP---');
       console.log('CUIT:', cuit);
