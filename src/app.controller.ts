@@ -165,6 +165,7 @@ export class AppController {
         FchVtoPago: regfe['FchVtoPago'],
         MonId: regfe['MonId'],
         MonCotiz: regfe['MonCotiz'],
+        CondicionIvaReceptor: 5, // Consumidor Final (según documentación AFIP)
         Tributos: {
           Tributo: {
             Id: regfetrib['Id'],
@@ -193,15 +194,7 @@ export class AppController {
 
       // AFIP siempre requiere la condición IVA del receptor, incluso para monotributistas
       if (vatCondition == 6) {
-        FECAEDetRequest['Iva'] = {
-          AlicIva: [
-            {
-              Id: 8, // Consumidor Final (receptor)
-              BaseImp: regfe['ImpNeto'],
-              Importe: 0, // Sin IVA para monotributistas
-            },
-          ],
-        };
+        FECAEDetRequest['Iva'] = null;
       }
 
       console.log(JSON.stringify(FECAEDetRequest));
