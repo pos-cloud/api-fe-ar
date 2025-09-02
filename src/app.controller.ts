@@ -101,7 +101,7 @@ export class AppController {
       regfe['DocNro'] = docnumber; //0 para consumidor final / importe menor a 1000
       regfe['CbteFch'] = cbteFecha; // fecha emision de factura
       regfe['ImpNeto'] = Math.floor(impneto * 100) / 100; // Imp Neto
-      regfe['ImpTotConc'] = 0; // no gravado
+      regfe['ImpTotConc'] = exempt; // no gravado
       regfe['ImpIVA'] = Math.floor(impIVA * 100) / 100; // IVA liquidado
       regfe['ImpTrib'] = 0; // otros tributos
       regfe['ImpOpEx'] = 0; // operacion exentas
@@ -169,7 +169,6 @@ export class AppController {
         FchVtoPago: regfe['FchVtoPago'],
         MonId: regfe['MonId'],
         MonCotiz: regfe['MonCotiz'],
-        CondicionIvaReceptor: 5, // Consumidor Final (según documentación AFIP)
         Tributos: {
           Tributo: {
             Id: regfetrib['Id'],
@@ -183,30 +182,19 @@ export class AppController {
           AlicIva: aliCuotaIVA.length > 0 ? aliCuotaIVA : null,
         },
       };
-
       if (CbteAsoc) {
         FECAEDetRequest['CbtesAsoc'] = {
           CbteAsoc,
         };
       }
-
       if (Opcional) {
         FECAEDetRequest['Opcionales'] = {
           Opcional,
         };
       }
 
-      // AFIP siempre requiere la condición IVA del receptor, incluso para monotributistas
       if (vatCondition == 6) {
-        FECAEDetRequest['Iva'] = {
-          AlicIva: [
-            {
-              Id: 5, // Consumidor Final (receptor)
-              BaseImp: regfe['ImpNeto'],
-              Importe: 0, // Sin IVA para monotributistas
-            },
-          ],
-        };
+        FECAEDetRequest['Iva'] = null;
       }
 
       console.log('---AFIP---');
