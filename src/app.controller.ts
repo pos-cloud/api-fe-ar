@@ -169,6 +169,8 @@ export class AppController {
         FchVtoPago: regfe['FchVtoPago'],
         MonId: regfe['MonId'],
         MonCotiz: regfe['MonCotiz'],
+        // Solo agregar CondicionIvaReceptor en homologación
+        ...(process.env.NODE_ENV !== 'production' && { CondicionIvaReceptor: 5 }),
         Tributos: {
           Tributo: {
             Id: regfetrib['Id'],
