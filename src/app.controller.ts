@@ -178,10 +178,17 @@ export class AppController {
             Importe: regfetrib['Importe'],
           },
         },
-        Iva: {
-          AlicIva: aliCuotaIVA.length > 0 ? aliCuotaIVA : null,
-        },
+        // Iva: {
+        //   AlicIva: aliCuotaIVA.length > 0 ? aliCuotaIVA : null,
+        // },
       };
+
+      if (aliCuotaIVA.length > 0) {
+        FECAEDetRequest['Iva'] = {
+          AlicIva: aliCuotaIVA,
+        };
+      }
+
       if (CbteAsoc) {
         FECAEDetRequest['CbtesAsoc'] = {
           CbteAsoc,
