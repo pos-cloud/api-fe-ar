@@ -64,14 +64,11 @@ export class Wsfev1Service {
       const response: FECAESolicitar = (aux as { FECAESolicitarResult: unknown })
         .FECAESolicitarResult as FECAESolicitar;
       if (!!response.Errors && !!response.Errors.Err.length) {
-        console.log(response.Errors);
-
         const errors = response.Errors.Err.map(error => `${error.Code} - ${error.Msg}`).join(', ');
         throw new Error(errors);
       }
       return response;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
