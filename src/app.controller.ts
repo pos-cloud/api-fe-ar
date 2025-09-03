@@ -101,10 +101,10 @@ export class AppController {
       regfe['DocNro'] = docnumber; //0 para consumidor final / importe menor a 1000
       regfe['CbteFch'] = cbteFecha; // fecha emision de factura
       regfe['ImpNeto'] = Math.floor(impneto * 100) / 100; // Imp Neto
-      regfe['ImpTotConc'] = exempt; // no gravado
+      regfe['ImpTotConc'] = 0; // no gravado
       regfe['ImpIVA'] = Math.floor(impIVA * 100) / 100; // IVA liquidado
       regfe['ImpTrib'] = 0; // otros tributos
-      regfe['ImpOpEx'] = 0; // operacion exentas
+      regfe['ImpOpEx'] = vatCondition != 6 ? exempt : 0; // operacion exentas
       regfe['ImpTotal'] = impTotal; // total de la factura. ImpNeto + ImpTotConc + ImpIVA + ImpTrib + ImpOpEx
       regfe['FchServDesde'] = null; // solo concepto 2 o 3
       regfe['FchServHasta'] = null; // solo concepto 2 o 3
@@ -180,19 +180,17 @@ export class AppController {
             Importe: regfetrib['Importe'],
           },
         },
-        Iva: {
-          AlicIva:
-            aliCuotaIVA.length > 0
-              ? aliCuotaIVA
-              : [
-                  {
-                    Id: 5, // Consumidor Final
-                    BaseImp: regfe['ImpNeto'],
-                    Importe: 0,
-                  },
-                ],
-        },
+        // Iva: {
+        //   AlicIva: aliCuotaIVA.length > 0 ? aliCuotaIVA : null,
+        // },
       };
+
+      if (aliCuotaIVA.length > 0) {
+        FECAEDetRequest['Iva'] = {
+          AlicIva: aliCuotaIVA,
+        };
+      }
+
       if (CbteAsoc) {
         FECAEDetRequest['CbtesAsoc'] = {
           CbteAsoc,
@@ -203,29 +201,6 @@ export class AppController {
           Opcional,
         };
       }
-
-      // Removido: ya no es necesario porque Iva.AlicIva siempre tiene contenido
-
-      console.log('---AFIP---');
-      console.log('CUIT:', cuit);
-      console.log('Body:', JSON.stringify(FeCabReq));
-      console.log('Body2:', JSON.stringify(FECAEDetRequest));
-      console.log('---AFIP---');
-
-      console.log('---BEFORE AFIP CALL---');
-      console.log('TA Token:', TA.credentials[0].token);
-      console.log('TA Sign:', TA.credentials[0].sign);
-      console.log('FeCabReq:', JSON.stringify(FeCabReq, null, 2));
-      console.log('FECAEDetRequest:', JSON.stringify(FECAEDetRequest, null, 2));
-      console.log('---BEFORE AFIP CALL---');
-
-      // Consultar condiciones IVA válidas para factura C
-      const condicionIvaResponse = await this.wsfev1Service.getCondicionIvaReceptor(
-        TA.credentials[0].token,
-        TA.credentials[0].sign,
-        cuit,
-        'C',
-      );
 
       const caeData = await this.wsfev1Service.solicitarCAE(
         TA.credentials[0].token,
@@ -252,13 +227,6 @@ export class AppController {
         message,
       };
     } catch (error) {
-      console.log('---ERROR DETAILS---');
-      console.log('Error type:', typeof error);
-      console.log('Error message:', error.message);
-      console.log('Error stack:', error.stack);
-      console.log('Full error object:', JSON.stringify(error, null, 2));
-      console.log('---ERROR DETAILS---');
-
       return {
         status: 'Error',
         message: error.message,

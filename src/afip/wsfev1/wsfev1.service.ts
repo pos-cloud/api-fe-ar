@@ -43,12 +43,6 @@ export class Wsfev1Service {
         .FECompUltimoAutorizadoResult as FECompUltimoAutorizado;
       return response;
     } catch (error) {
-      this.logger.log('---WSFEv1 ERROR---');
-      this.logger.log('Error type:', typeof error);
-      this.logger.log('Error message:', error.message);
-      this.logger.log('Error stack:', error.stack);
-      this.logger.log('Full error object:', JSON.stringify(error, null, 2));
-      this.logger.log('---WSFEv1 ERROR---');
       throw error;
     }
   }
@@ -103,12 +97,7 @@ export class Wsfev1Service {
 
       const response: FECAESolicitar = (aux as { FECAESolicitarResult: unknown })
         .FECAESolicitarResult as FECAESolicitar;
-
-      this.logger.log('Parsed response:', JSON.stringify(response, null, 2));
-
       if (!!response.Errors && !!response.Errors.Err.length) {
-        this.logger.log('---AFIP ERRORS---');
-        this.logger.log('Errors:', JSON.stringify(response.Errors, null, 2));
         const errors = response.Errors.Err.map(error => `${error.Code} - ${error.Msg}`).join(', ');
         throw new Error(errors);
       }
