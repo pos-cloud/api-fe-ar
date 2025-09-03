@@ -43,7 +43,6 @@ export class Wsfev1Service {
         .FECompUltimoAutorizadoResult as FECompUltimoAutorizado;
       return response;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

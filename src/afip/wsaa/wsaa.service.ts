@@ -183,7 +183,6 @@ export class WsaaService {
       await fs.writeFile(filePath, `${xml}`, 'utf8');
       return xml;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
