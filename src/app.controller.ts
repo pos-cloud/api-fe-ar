@@ -62,7 +62,6 @@ export class AppController {
       let impIVA = 0;
       let impneto = 0;
       let exempt = 0;
-      const impTotal = Math.round(transaction.totalPrice * 100) / 100;
       const aliCuotaIVA = [];
 
       if (transaction.letter !== 'C') {
@@ -112,7 +111,16 @@ export class AppController {
       regfe['ImpIVA'] = Math.round(impIVA * 100) / 100; // IVA liquidado
       regfe['ImpTrib'] = 0; // otros tributos
       regfe['ImpOpEx'] = vatCondition != 6 ? Math.round(exempt * 100) / 100 : 0; // operacion exentas
-      regfe['ImpTotal'] = impTotal; // total de la factura. ImpNeto + ImpTotConc + ImpIVA + ImpTrib + ImpOpEx
+      // Calcular el total como suma de todos los componentes para que AFIP lo valide correctamente
+      regfe['ImpTotal'] =
+        Math.round(
+          (regfe['ImpNeto'] +
+            regfe['ImpTotConc'] +
+            regfe['ImpIVA'] +
+            regfe['ImpTrib'] +
+            regfe['ImpOpEx']) *
+            100,
+        ) / 100;
       regfe['FchServDesde'] = null; // solo concepto 2 o 3
       regfe['FchServHasta'] = null; // solo concepto 2 o 3
       regfe['FchVtoPago'] = null; // solo concepto 2 o 3
