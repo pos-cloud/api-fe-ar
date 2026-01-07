@@ -69,19 +69,17 @@ export class AppController {
         exempt = Math.round(transaction.exempt * 100) / 100;
         if (transaction.taxes.length > 0) {
           for (let i = 0; i < transaction.taxes.length; i++) {
-            // Redondear la base imponible a 2 decimales
-            const baseImp = Math.round(transaction.taxes[i].taxBase * 100) / 100;
-
-            // Calcular el importe de IVA desde la base y el porcentaje para asegurar exactitud
-            // AFIP requiere que Importe = BaseImp * (percentage / 100) exactamente
+            const taxCode = parseInt(transaction.taxes[i].tax.code, 10);
             const percentage =
               transaction.taxes[i].tax.percentage || transaction.taxes[i].percentage;
-            const importeIVA = Math.round(baseImp * percentage * 100) / 10000; // Redondear a 2 decimales
+            const baseImp = Math.round(transaction.taxes[i].taxBase * 100) / 100;
+            // Calcular el importe desde la base y porcentaje para que AFIP lo valide correctamente
+            const importeIVA = Math.round(baseImp * percentage) / 100;
 
             aliCuotaIVA.push({
-              Id: transaction.taxes[i].tax.code, // Asigna el ID correcto
-              BaseImp: baseImp, // Base imponible
-              Importe: importeIVA, // Importe de IVA calculado desde base y porcentaje
+              Id: taxCode,
+              BaseImp: baseImp,
+              Importe: importeIVA,
             });
             impneto += baseImp;
             impIVA += importeIVA;
