@@ -62,24 +62,33 @@ export class AppController {
       let impIVA = 0;
       let impneto = 0;
       let exempt = 0;
-      const impTotal = Math.floor(transaction.totalPrice * 100) / 100;
+      const impTotal = Math.round(transaction.totalPrice * 100) / 100;
       const aliCuotaIVA = [];
 
       if (transaction.letter !== 'C') {
-        exempt = Math.floor(transaction.exempt * 100) / 100;
+        exempt = Math.round(transaction.exempt * 100) / 100;
         if (transaction.taxes.length > 0) {
           for (let i = 0; i < transaction.taxes.length; i++) {
+            // Redondear la base imponible a 2 decimales
+            const baseImp = Math.round(transaction.taxes[i].taxBase * 100) / 100;
+
+            // Calcular el importe de IVA desde la base y el porcentaje para asegurar exactitud
+            // AFIP requiere que Importe = BaseImp * (percentage / 100) exactamente
+            const percentage =
+              transaction.taxes[i].tax.percentage || transaction.taxes[i].percentage;
+            const importeIVA = Math.round(baseImp * percentage * 100) / 10000; // Redondear a 2 decimales
+
             aliCuotaIVA.push({
               Id: transaction.taxes[i].tax.code, // Asigna el ID correcto
-              BaseImp: Math.floor(transaction.taxes[i].taxBase * 100) / 100, // Base imponible
-              Importe: Math.floor(transaction.taxes[i].taxAmount * 100) / 100, // Importe de IVA
+              BaseImp: baseImp, // Base imponible
+              Importe: importeIVA, // Importe de IVA calculado desde base y porcentaje
             });
-            impneto += Math.floor(transaction.taxes[i].taxBase * 100) / 100;
-            impIVA += Math.floor(transaction.taxes[i].taxAmount * 100) / 100;
+            impneto += baseImp;
+            impIVA += importeIVA;
           }
         }
       } else {
-        impneto = Math.floor(transaction.totalPrice * 100) / 100;
+        impneto = Math.round(transaction.totalPrice * 100) / 100;
       }
       const datosDeUltimoComprobanteAutorizado =
         await this.wsfev1Service.buscarUltimoComprobanteAutorizado(
@@ -100,11 +109,11 @@ export class AppController {
       regfe['DocTipo'] = doctipo; //80=CUIT -- 96 DNI --- 99 general cons final
       regfe['DocNro'] = docnumber; //0 para consumidor final / importe menor a 1000
       regfe['CbteFch'] = cbteFecha; // fecha emision de factura
-      regfe['ImpNeto'] = Math.floor(impneto * 100) / 100; // Imp Neto
+      regfe['ImpNeto'] = Math.round(impneto * 100) / 100; // Imp Neto
       regfe['ImpTotConc'] = 0; // no gravado
-      regfe['ImpIVA'] = Math.floor(impIVA * 100) / 100; // IVA liquidado
+      regfe['ImpIVA'] = Math.round(impIVA * 100) / 100; // IVA liquidado
       regfe['ImpTrib'] = 0; // otros tributos
-      regfe['ImpOpEx'] = vatCondition != 6 ? exempt : 0; // operacion exentas
+      regfe['ImpOpEx'] = vatCondition != 6 ? Math.round(exempt * 100) / 100 : 0; // operacion exentas
       regfe['ImpTotal'] = impTotal; // total de la factura. ImpNeto + ImpTotConc + ImpIVA + ImpTrib + ImpOpEx
       regfe['FchServDesde'] = null; // solo concepto 2 o 3
       regfe['FchServHasta'] = null; // solo concepto 2 o 3
@@ -124,7 +133,7 @@ export class AppController {
       if (baseimp !== 0) {
         regfeiva['Id'] = 5;
         regfeiva['BaseImp'] = impneto;
-        regfeiva['Importe'] = Math.floor(impIVA * 100) / 100;
+        regfeiva['Importe'] = Math.round(impIVA * 100) / 100;
       } else {
         regfeiva['Id'] = 0;
         regfeiva['BaseImp'] = 0;
