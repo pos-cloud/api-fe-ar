@@ -51,7 +51,7 @@ export class AppController {
       const tipocbte = tipcomp;
 
       // Obtener la fecha actual en la zona horaria de Argentina
-      let cbteFecha = moment.tz('America/Argentina/Buenos_Aires').format('YYYYMMDD');
+      let cbteFecha = moment().tz('America/Argentina/Buenos_Aires').format('YYYYMMDD');
 
       if (transaction?.endDate) {
         const endDate = moment.tz(transaction.endDate, 'America/Argentina/Buenos_Aires');
