@@ -69,6 +69,9 @@ interface Transaction {
       code: string;
     };
     identificationValue: string;
+    vatCondition: {
+      code: string;
+    };
   };
   optionalAFIP: any;
 }

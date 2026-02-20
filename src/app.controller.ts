@@ -184,6 +184,8 @@ export class AppController {
         FchVtoPago: regfe['FchVtoPago'],
         MonId: regfe['MonId'],
         MonCotiz: regfe['MonCotiz'],
+        // comentar sino funciona
+        CondicionIVAReceptorId: transaction?.company?.vatCondition?.code ?? 5,
         Tributos: {
           Tributo: {
             Id: regfetrib['Id'],
